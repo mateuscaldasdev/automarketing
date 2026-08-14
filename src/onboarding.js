@@ -43,7 +43,12 @@ const NEGOCIOS = [
   {
     value: 'software',
     label: 'Software / SaaS',
-    sugestao: ['desenvolvedor-senior', 'engenheiro-arquitetura-software', 'coolify'],
+    sugestao: ['desenvolvedor-senior', 'engenheiro-arquitetura-software', 'coolify', 'cloudflare'],
+  },
+  {
+    value: 'agencia',
+    label: 'Agência / infra de clientes',
+    sugestao: ['coolify', 'cloudflare', 'n8n', 'crm'],
   },
   { value: 'outro', label: 'Outro', sugestao: [] },
 ];

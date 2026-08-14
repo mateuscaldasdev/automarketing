@@ -33,7 +33,8 @@ Determina as ferramentas que já vêm marcadas na pergunta 5:
 | Venda de produto / e-commerce | CRM, n8n, Redes Sociais |
 | Negócio local (loja, clínica, salão) | CRM, Redes Sociais, Site |
 | Infoproduto / educação | Blog, Redes Sociais, Site |
-| Software / SaaS | Dev Sênior, Arquitetura, Coolify |
+| Software / SaaS | Dev Sênior, Arquitetura, Coolify, Cloudflare |
+| Agência / infra de clientes | Coolify, Cloudflare, n8n, CRM |
 | Outro | nada marcado |
 
 É só um ponto de partida — dá para marcar e desmarcar tudo na pergunta seguinte.

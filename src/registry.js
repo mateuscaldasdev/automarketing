@@ -43,7 +43,14 @@ export const REGISTRY = [
     name: 'Coolify',
     kind: 'skill',
     group: 'Infra',
-    description: 'Squad de infra: deploy self-hosted na Coolify, domínios e SSL.',
+    description: 'Squad de infra: sobe stacks e apps na Coolify pela API, com deploy e diagnóstico.',
+  },
+  {
+    id: 'cloudflare',
+    name: 'Cloudflare (DNS)',
+    kind: 'skill',
+    group: 'Infra',
+    description: 'Squad de DNS: aponta domínio e subdomínios pela API, no padrão A + CNAMEs.',
   },
   {
     id: 'desenvolvedor-senior',

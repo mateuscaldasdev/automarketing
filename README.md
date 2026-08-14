@@ -67,7 +67,8 @@ que entrega e como customizar.
 | **Criação de Site** | Briefing → Copywriter → Front-end. Entrega uma landing rodando, com o form ligado ao CRM | [docs](docs/squads/criacao-de-site.md) |
 | **Redes Sociais** | Linha editorial → Calendário → Roteiros, carrosséis e legendas prontos para publicar | [docs](docs/squads/redes-sociais.md) |
 | **n8n** | Gera JSON de workflow importável, com webhooks, integrações e nada de segredo no arquivo | [docs](docs/squads/n8n.md) |
-| **Coolify** | Deploy self-hosted: Dockerfile, variáveis, domínio, SSL e tabela de diagnóstico | [docs](docs/squads/coolify.md) |
+| **Coolify** | Sobe stacks e apps pela API da Coolify, com deploy, env e diagnóstico. Traz n8n e Evolution prontos | [docs](docs/squads/coolify.md) |
+| **Cloudflare (DNS)** | Aponta domínio e subdomínios pela API, no padrão A + CNAMEs com proxy off | [docs](docs/squads/cloudflare.md) |
 
 ### Agentes — executam tarefas fechadas em contexto separado
 
