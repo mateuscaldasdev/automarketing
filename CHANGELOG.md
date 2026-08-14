@@ -2,6 +2,22 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [0.2.0] — 2026-08-14
+
+### Infra
+
+- Skill `cloudflare` — DNS pela API no padrão A (`vps.`) + CNAMEs com proxy desligado,
+  idempotente, com comando `checar` que acusa a causa nº 1 de SSL que não emite
+- Skill `coolify` reescrita — executa pela API v1 (conferida contra o `openapi.json`
+  oficial): cria projeto, sobe stack, define variáveis, cria Postgres, faz deploy e
+  acompanha o status
+- Stacks no padrão da casa: `n8n.yml` em modo fila (editor + worker + task-runners +
+  Postgres + Redis, com editor e webhook em domínios separados) e `evolution-go.yml`
+  com MinIO
+- Migração de VPS: comando `migrar` para servidores na mesma Coolify (com volumes) e
+  `scripts/migrar-vps.sh` para Coolifys diferentes — inventário, backup, restauração e
+  conferência, sem nunca apagar nada na origem
+
 ## [0.1.0] — 2026-08-14
 
 Primeira versão funcional.

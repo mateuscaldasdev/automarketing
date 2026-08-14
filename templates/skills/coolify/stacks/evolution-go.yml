@@ -1,0 +1,97 @@
+# Evolution Go (WhatsApp) — padrão Automarketing.
+#
+# Estrutura: evolution-go + Postgres dedicado, com mídia no MinIO/S3 externo.
+#
+# Sobe com:
+#   node coolify.mjs stack stacks/evolution-go.yml evogo-cliente \
+#     --projeto <uuid> --servidor <uuid> --dominio https://evogo.cliente.com.br --deploy
+#
+# Variáveis que VOCÊ define:
+#   POSTGRES_PASSWORD   senha do Postgres desta stack
+#   GLOBAL_API_KEY      chave global — quem tiver ela controla TODAS as instâncias
+#   MINIO_HOST          ex.: s3.cliente.com.br
+#   MINIO_ACCESS_KEY / MINIO_SECRET_KEY
+#
+# ⚠️ O volume evolution_instances guarda as SESSÕES do WhatsApp. Perder esse volume
+# significa reconectar cada número lendo QR de novo. É o item mais crítico em migração.
+#
+# extra_hosts com host-gateway: usado quando o MinIO roda na MESMA VPS e o domínio
+# público não resolve de dentro do container. Se o S3 for externo de verdade,
+# remova a linha.
+
+services:
+  postgres:
+    image: 'postgres:15'
+    restart: unless-stopped
+    command: 'postgres -c max_connections=200'
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_USER=postgres
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+      - TZ=America/Sao_Paulo
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U postgres'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  evolution-go:
+    image: 'evoapicloud/evolution-go:latest'
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - '${MINIO_HOST}:host-gateway'
+    volumes:
+      - 'evolution_instances:/evolution/instances'
+    environment:
+      - SERVER_PORT=8080
+      - CLIENT_NAME=EVOGO
+      - 'GLOBAL_API_KEY=${GLOBAL_API_KEY}'
+      - LANGUAGE=pt-BR
+      - LOGTYPE=console
+      - WADEBUG=INFO
+      - DEL_INSTANCE=false
+      - 'POSTGRES_AUTH_DB=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/evogo_auth?sslmode=disable'
+      - 'POSTGRES_USERS_DB=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/evogo_users?sslmode=disable'
+      - DATABASE_SAVE_MESSAGES=false
+      - MINIO_ENABLED=true
+      - 'MINIO_ENDPOINT=${MINIO_HOST}'
+      - MINIO_USE_SSL=true
+      - 'MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}'
+      - 'MINIO_SECRET_KEY=${MINIO_SECRET_KEY}'
+      - 'MINIO_BUCKET=${MINIO_BUCKET:-evogo}'
+      - MINIO_REGION=us-east-1
+      - WEBHOOK_FILES=true
+      - 'CONFIG_SESSION_PHONE_CLIENT=Evolution API'
+      - CONFIG_SESSION_PHONE_NAME=chrome
+      - CONFIG_SESSION_PHONE_VERSION=2.3000.1044830814
+      - QRCODE_LIMIT=30
+      - 'QRCODE_COLOR=#175197'
+      - WEBHOOK_EVENTS_GROUPS_UPSERT=true
+      - WEBHOOK_EVENTS_GROUPS_UPDATE=true
+      - WEBHOOK_EVENTS_GROUP_PARTICIPANTS_UPDATE=true
+      - WEBHOOK_EVENTS_CONNECTION_UPDATE=true
+      - WEBHOOK_EVENTS_REMOVE_INSTANCE=false
+      - WEBHOOK_EVENTS_LOGOUT_INSTANCE=false
+      - WEBHOOK_EVENTS_LABELS_EDIT=true
+      - WEBHOOK_EVENTS_LABELS_ASSOCIATION=true
+      - WEBHOOK_EVENTS_CALL=true
+      - WEBHOOK_EVENTS_TYPEBOT_START=false
+      - WEBHOOK_EVENTS_TYPEBOT_CHANGE_STATUS=false
+      - WEBHOOK_EVENTS_ERRORS=false
+      - WEBHOOK_EVENTS_ERRORS_WEBHOOK=
+      - TYPEBOT_ENABLED=false
+      - TYPEBOT_API_VERSION=latest
+      - CHATWOOT_ENABLED=false
+      - CHATWOOT_MESSAGE_READ=true
+    expose:
+      - '8080'
+
+volumes:
+  postgres_data: null
+  evolution_instances: null

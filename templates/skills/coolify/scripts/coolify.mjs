@@ -199,6 +199,35 @@ try {
       break;
     }
 
+    case 'migrar': {
+      // Migração nativa: só funciona entre servidores da MESMA Coolify.
+      // Ela PARA o recurso, move os volumes e atualiza os registros.
+      const [uuid] = args;
+      const destino = flag('destino');
+      if (!uuid || !destino) {
+        throw new Error(
+          'Uso: migrar <uuid-do-recurso> --destino <uuid-do-servidor-destino> [--app|--banco] [--sem-volumes]\n' +
+          '  Os dois servidores precisam estar na MESMA Coolify.\n' +
+          '  Coolifys diferentes ou VPS sem Coolify: use scripts/migrar-vps.sh',
+        );
+      }
+      const recurso = tem('app') ? 'applications' : tem('banco') ? 'databases' : 'services';
+      const migrarVolumes = !tem('sem-volumes');
+
+      console.log(`  Migrando ${recurso}/${uuid} → servidor ${destino}`);
+      console.log(`  Volumes: ${migrarVolumes ? 'serão transferidos' : 'NÃO serão transferidos'}`);
+      console.log('  O recurso será PARADO durante a migração.\n');
+
+      const r = await api(`/${recurso}/${uuid}/migrate`, {
+        method: 'POST',
+        body: { destination_uuid: destino, migrate_volumes: migrarVolumes },
+      });
+      console.log(`  ✔ migração concluída${r.message ? ': ' + r.message : ''}`);
+      console.log(`  Agora faça o deploy no destino: node coolify.mjs deploy ${uuid}`);
+      console.log('  Confira os dados ANTES de virar o DNS.');
+      break;
+    }
+
     case 'status': {
       const [uuid] = args;
       if (!uuid) throw new Error('Uso: status <uuid-do-deployment>');
@@ -231,6 +260,7 @@ try {
   stack <arquivo.yml> <nome>        sobe um docker-compose como serviço
   postgres <nome>                   cria um Postgres gerenciado
   env <uuid> CHAVE=valor            define variáveis (--app se for aplicação)
+  migrar <uuid> --destino <uuid>    move para outro servidor da MESMA Coolify (com volumes)
   deploy <uuid> [--force]
   status <uuid-do-deployment>
   logs <uuid>
