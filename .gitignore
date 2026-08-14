@@ -1,0 +1,7 @@
+node_modules/
+.env
+.DS_Store
+*.log
+
+# dados gerados ao rodar o CRM localmente (o template não deve carregar banco)
+templates/apps/crm/data/

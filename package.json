@@ -1,0 +1,30 @@
+{
+  "name": "automarketing",
+  "version": "0.1.0",
+  "description": "CLI da Automarketing — instale squads (skills + agentes) e o CRM open source no seu projeto.",
+  "type": "module",
+  "bin": {
+    "automarketing": "bin/automarketing.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node bin/automarketing.js"
+  },
+  "keywords": [
+    "automarketing",
+    "claude-code",
+    "skills",
+    "agents",
+    "crm",
+    "n8n"
+  ],
+  "license": "MIT"
+}

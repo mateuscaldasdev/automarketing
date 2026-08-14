@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM Automarketing</title>
+<style>
+  :root{
+    --bg:#0e1015; --surface:#161a22; --surface-2:#1e232d; --line:#2a303c;
+    --text:#e8ecf3; --muted:#8b93a3; --brand:#7c5cff; --ok:#2fbf71;
+    --warn:#f0a132; --danger:#e5484d; --radius:12px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  header{display:flex;align-items:center;gap:16px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--surface);flex-wrap:wrap}
+  header h1{font-size:17px;margin:0;letter-spacing:.3px}
+  header h1 span{color:var(--brand)}
+  nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+  nav button{background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:14px}
+  nav button.ativo{background:var(--surface-2);color:var(--text);border-color:var(--line)}
+  main{padding:24px;max-width:1400px;margin:0 auto}
+  .metricas{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+  .metrica{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+  .metrica b{display:block;font-size:24px;font-weight:600;margin-top:2px}
+  .metrica small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+  .kanban{display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:12px;overflow-x:auto}
+  .coluna{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;min-height:180px}
+  .coluna.hover{border-color:var(--brand)}
+  .coluna h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);display:flex;justify-content:space-between}
+  .card{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:grab}
+  .card:active{cursor:grabbing}
+  .card strong{display:block;font-size:14px}
+  .card small{color:var(--muted);font-size:12px;display:block}
+  .card .valor{color:var(--ok);font-weight:600;font-size:13px}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
+  th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .tag.ok{background:rgba(47,191,113,.15);color:var(--ok)}
+  .tag.baixo{background:rgba(229,72,77,.15);color:var(--danger)}
+  form.linha{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  input,select,textarea{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:9px 12px;border-radius:8px;font-size:14px;font-family:inherit}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:-1px}
+  button.primario{background:var(--brand);border:none;color:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500}
+  button.mini{background:transparent;border:1px solid var(--line);color:var(--muted);padding:4px 9px;border-radius:6px;cursor:pointer;font-size:12px}
+  section{display:none}
+  section.ativa{display:block}
+  h2{font-size:15px;margin:26px 0 12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+  .msg{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+  .msg.entrada{border-left:3px solid var(--brand)}
+  .msg.saida{border-left:3px solid var(--ok)}
+  .msg small{color:var(--muted);font-size:12px}
+  #aviso{position:fixed;right:20px;bottom:20px;background:var(--surface-2);border:1px solid var(--brand);padding:12px 18px;border-radius:10px;opacity:0;transition:.2s;pointer-events:none}
+  #aviso.ver{opacity:1}
+  .dica{color:var(--muted);font-size:13px;margin:0 0 14px}
+  code{background:var(--surface-2);padding:2px 6px;border-radius:5px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>CRM <span>Automarketing</span></h1>
+  <nav>
+    <button data-aba="funil" class="ativo">Funil</button>
+    <button data-aba="estoque">Estoque</button>
+    <button data-aba="whatsapp">WhatsApp</button>
+  </nav>
+</header>
+
+<main>
+  <div class="metricas" id="metricas"></div>
+
+  <section id="funil" class="ativa">
+    <form class="linha" id="form-lead">
+      <input name="nome" placeholder="Nome do lead" required>
+      <input name="telefone" placeholder="Telefone (5511...)">
+      <input name="email" placeholder="E-mail" type="email">
+      <input name="valor" placeholder="Valor R$" type="number" step="0.01" style="width:120px">
+      <select name="origem">
+        <option value="manual">Manual</option>
+        <option value="site">Site</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="indicacao">Indicação</option>
+        <option value="anuncio">Anúncio</option>
+      </select>
+      <button class="primario">Adicionar lead</button>
+    </form>
+    <p class="dica">Arraste os cards entre as colunas para mudar a etapa — cada mudança dispara o webhook do n8n.</p>
+    <div class="kanban" id="kanban"></div>
+  </section>
+
+  <section id="estoque">
+    <form class="linha" id="form-produto">
+      <input name="sku" placeholder="SKU" style="width:130px">
+      <input name="nome" placeholder="Nome do produto" required>
+      <input name="preco" placeholder="Preço" type="number" step="0.01" style="width:110px">
+      <input name="estoque" placeholder="Qtd" type="number" style="width:90px">
+      <input name="estoqueMinimo" placeholder="Mínimo" type="number" style="width:100px">
+      <button class="primario">Adicionar produto</button>
+    </form>
+    <table>
+      <thead><tr><th>SKU</th><th>Produto</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Movimentar</th></tr></thead>
+      <tbody id="tabela-produtos"></tbody>
+    </table>
+    <h2>Últimas movimentações</h2>
+    <table>
+      <thead><tr><th>Quando</th><th>SKU</th><th>Tipo</th><th>Qtd</th><th>Saldo</th><th>Motivo</th></tr></thead>
+      <tbody id="tabela-movimentacoes"></tbody>
+    </table>
+  </section>
+
+  <section id="whatsapp">
+    <form class="linha" id="form-msg">
+      <input name="telefone" placeholder="Telefone (5511988887777)" required style="width:230px">
+      <input name="texto" placeholder="Mensagem" required style="flex:1;min-width:260px">
+      <button class="primario">Enviar</button>
+    </form>
+    <p class="dica">Webhook para a Evolution API: <code>POST /webhook/whatsapp</code> — mensagem recebida vira lead automaticamente.</p>
+    <h2>Conversas</h2>
+    <div id="mensagens"></div>
+  </section>
+</main>
+
+<div id="aviso"></div>
+
+<script>
+const ETAPAS = ['novo','contato','proposta','ganho','perdido'];
+const brl = (n) => (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const el = (id) => document.getElementById(id);
+
+function aviso(txt){
+  const a = el('aviso'); a.textContent = txt; a.classList.add('ver');
+  clearTimeout(aviso.t); aviso.t = setTimeout(()=>a.classList.remove('ver'), 3000);
+}
+
+async function api(caminho, opts = {}){
+  const res = await fetch(caminho, {
+    headers: {'Content-Type':'application/json'},
+    ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  const dados = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(dados.erro || `erro ${res.status}`);
+  return dados;
+}
+
+/* abas */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('ativo'));
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('ativa'));
+  b.classList.add('ativo');
+  el(b.dataset.aba).classList.add('ativa');
+});
+
+/* métricas */
+async function carregarMetricas(){
+  const m = await api('/api/metricas');
+  el('metricas').innerHTML = `
+    <div class="metrica"><small>Leads</small><b>${m.leads}</b></div>
+    <div class="metrica"><small>Pipeline aberto</small><b>${brl(m.pipeline)}</b></div>
+    <div class="metrica"><small>Receita ganha</small><b>${brl(m.receitaGanha)}</b></div>
+    <div class="metrica"><small>Estoque baixo</small><b>${m.estoqueBaixo}</b></div>
+    <div class="metrica"><small>WhatsApp</small><b>${m.integracoes.whatsapp ? 'on' : 'off'}</b></div>
+    <div class="metrica"><small>n8n</small><b>${m.integracoes.n8n ? 'on' : 'off'}</b></div>`;
+}
+
+/* funil */
+async function carregarLeads(){
+  const leads = await api('/api/leads');
+  el('kanban').innerHTML = ETAPAS.map(etapa => {
+    const dela = leads.filter(l => l.etapa === etapa);
+    return `<div class="coluna" data-etapa="${etapa}">
+      <h3><span>${etapa}</span><span>${dela.length}</span></h3>
+      ${dela.map(l => `
+        <div class="card" draggable="true" data-id="${l.id}">
+          <strong>${escapar(l.nome)}</strong>
+          <small>${escapar(l.telefone||'sem telefone')} · ${escapar(l.origem)}</small>
+          <span class="valor">${brl(l.valor)}</span>
+          <button class="mini" data-remover="${l.id}" style="margin-top:6px">remover</button>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+  ligarDragAndDrop();
+}
+
+function escapar(s){ return String(s??'').replace(/[<>&"]/g, ch => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch])); }
+
+function ligarDragAndDrop(){
+  let arrastando = null;
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('dragstart', () => { arrastando = card.dataset.id; });
+  });
+  document.querySelectorAll('.coluna').forEach(col => {
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('hover'); });
+    col.addEventListener('dragleave', () => col.classList.remove('hover'));
+    col.addEventListener('drop', async e => {
+      e.preventDefault(); col.classList.remove('hover');
+      if(!arrastando) return;
+      await api(`/api/leads/${arrastando}`, { method:'PATCH', body:{ etapa: col.dataset.etapa } });
+      aviso('Etapa atualizada · evento enviado ao n8n');
+      arrastando = null;
+      atualizar();
+    });
+  });
+  document.querySelectorAll('[data-remover]').forEach(b => b.onclick = async ev => {
+    ev.stopPropagation();
+    await api(`/api/leads/${b.dataset.remover}`, { method:'DELETE' });
+    atualizar();
+  });
+}
+
+el('form-lead').onsubmit = async e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.target));
+  try { await api('/api/leads', { method:'POST', body:d }); e.target.reset(); aviso('Lead criado'); atualizar(); }
+  catch(err){ aviso(err.message); }
+};
+
+/* estoque */
+async function carregarEstoque(){
+  const [produtos, movs] = await Promise.all([api('/api/produtos'), api('/api/movimentacoes')]);
+  el('tabela-produtos').innerHTML = produtos.map(p => {
+    const baixo = p.estoque <= p.estoqueMinimo;
+    return `<tr>
+      <td><code>${escapar(p.sku)}</code></td>
+      <td>${escapar(p.nome)}</td>
+      <td>${brl(p.preco)}</td>
+      <td>${p.estoque} <small style="color:var(--muted)">(mín ${p.estoqueMinimo})</small></td>
+      <td><span class="tag ${baixo?'baixo':'ok'}">${baixo?'repor':'ok'}</span></td>
+      <td>
+        <button class="mini" data-mov="entrada" data-id="${p.id}">+ entrada</button>
+        <button class="mini" data-mov="saida" data-id="${p.id}">− saída</button>
+        <button class="mini" data-del="${p.id}">excluir</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6">Nenhum produto.</td></tr>';
+
+  el('tabela-movimentacoes').innerHTML = movs.map(m => `<tr>
+    <td>${new Date(m.em).toLocaleString('pt-BR')}</td>
+    <td><code>${escapar(m.sku)}</code></td>
+    <td>${m.tipo}</td><td>${m.quantidade}</td><td>${m.saldo}</td>
+    <td>${escapar(m.motivo||'—')}</td></tr>`).join('') || '<tr><td colspan="6">Sem movimentações.</td></tr>';
+
+  document.querySelectorAll('[data-mov]').forEach(b => b.onclick = async () => {
+    const qtd = prompt(`Quantidade de ${b.dataset.mov}:`, '1');
+    if(!qtd) return;
+    try {
+      await api(`/api/produtos/${b.dataset.id}/movimentar`, { method:'POST', body:{ tipo:b.dataset.mov, quantidade:Number(qtd), motivo:'ajuste manual' } });
+      aviso('Estoque movimentado'); atualizar();
+    } catch(err){ aviso(err.message); }
+  });
+  document.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    await api(`/api/produtos/${b.dataset.del}`, { method:'DELETE' }); atualizar();
+  });
+}
+
+el('form-produto').onsubmit = async e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.target));
+  try { await api('/api/produtos', { method:'POST', body:d }); e.target.reset(); aviso('Produto criado'); atualizar(); }
+  catch(err){ aviso(err.message); }
+};
+
+/* whatsapp */
+async function carregarMensagens(){
+  const msgs = await api('/api/mensagens');
+  el('mensagens').innerHTML = msgs.map(m => `
+    <div class="msg ${m.direcao}">
+      <div>${escapar(m.texto)}</div>
+      <small>${m.direcao === 'entrada' ? '←' : '→'} ${escapar(m.telefone)} · ${new Date(m.em).toLocaleString('pt-BR')} · ${escapar(m.detalhe)}</small>
+    </div>`).join('') || '<p class="dica">Nenhuma mensagem ainda.</p>';
+}
+
+el('form-msg').onsubmit = async e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.target));
+  try { await api('/api/whatsapp/enviar', { method:'POST', body:d }); aviso('Mensagem enviada'); }
+  catch(err){ aviso('Falha no envio: ' + err.message); }
+  e.target.reset();
+  atualizar();
+};
+
+async function atualizar(){
+  try { await Promise.all([carregarMetricas(), carregarLeads(), carregarEstoque(), carregarMensagens()]); }
+  catch(err){ aviso(err.message); }
+}
+atualizar();
+setInterval(atualizar, 15000);
+</script>
+</body>
+</html>
