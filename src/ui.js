@@ -1,6 +1,6 @@
 /** Prompts e cores sem dependências externas. */
 
-import { arte, largura } from './banner.js';
+import { arteColorida, largura } from './banner.js';
 
 const useColor = process.stdout.isTTY && !process.env.NO_COLOR;
 const wrap = (code) => (s) => (useColor ? `[${code}m${s}[0m` : s);
@@ -24,7 +24,7 @@ export function banner() {
 
   // Só desenha a arte se couber. Em terminal estreito ela quebraria em pedaços.
   if (colunas >= largura() + 2) {
-    for (const linha of arte()) console.log(' ' + roxo(linha));
+    for (const linha of arteColorida(useColor)) console.log(' ' + linha);
     console.log('');
     console.log(' ' + c.dim('cli · squads prontos para o seu projeto'));
   } else {

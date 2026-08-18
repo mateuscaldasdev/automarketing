@@ -124,3 +124,22 @@ export function arte() {
 export function largura() {
   return Math.max(...arte().map((l) => [...l].length));
 }
+
+/* --------------------------------- cores --------------------------------- */
+
+// Do lavanda ao roxo profundo da marca.
+const INICIO = [196, 168, 255];
+const FIM = [91, 46, 224];
+
+function corDaLinha(i, total) {
+  const t = total > 1 ? i / (total - 1) : 0;
+  const [r, g, b] = INICIO.map((c, n) => Math.round(c + (FIM[n] - c) * t));
+  return `[1m[38;2;${r};${g};${b}m`;
+}
+
+/** A arte com um degradê vertical. Sem cor, devolve o texto puro. */
+export function arteColorida(comCor = true) {
+  const linhas = arte();
+  if (!comCor) return linhas;
+  return linhas.map((linha, i) => corDaLinha(i, linhas.length) + linha + '[0m');
+}
