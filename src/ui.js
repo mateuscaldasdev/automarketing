@@ -1,7 +1,12 @@
 /** Prompts e cores sem dependências externas. */
 
+import { arte, largura } from './banner.js';
+
 const useColor = process.stdout.isTTY && !process.env.NO_COLOR;
 const wrap = (code) => (s) => (useColor ? `[${code}m${s}[0m` : s);
+
+/** Roxo da marca em 256 cores, com queda para o magenta padrão. */
+const roxo = (s) => (useColor ? `[1m[38;5;141m${s}[0m` : s);
 
 export const c = {
   bold: wrap('1'),
@@ -14,9 +19,19 @@ export const c = {
 };
 
 export function banner() {
+  const colunas = process.stdout.columns || 80;
   console.log('');
-  console.log('  ' + c.magenta(c.bold('▰▰▰')) + ' ' + c.bold('AUTOMARKETING') + c.dim('  cli'));
-  console.log(c.dim('      squads prontos para o seu projeto'));
+
+  // Só desenha a arte se couber. Em terminal estreito ela quebraria em pedaços.
+  if (colunas >= largura() + 2) {
+    for (const linha of arte()) console.log(' ' + roxo(linha));
+    console.log('');
+    console.log(' ' + c.dim('cli · squads prontos para o seu projeto'));
+  } else {
+    console.log('  ' + roxo('▰▰▰') + ' ' + c.bold('AUTOMARKETING') + c.dim('  cli'));
+    console.log(c.dim('      squads prontos para o seu projeto'));
+  }
+
   console.log('');
 }
 
