@@ -10,17 +10,22 @@
 
 ```bash
 cd ~/projetos/cliente-x
-npx automarketing
+npx github:mateuscaldasdev/automarketing
 ```
 
-O `npx` baixa e executa sem instalar nada permanentemente. Para instalar global:
+O `npx` baixa direto do GitHub e executa sem instalar nada permanentemente.
+
+⚠️ **`npx automarketing` (sem o `github:`) ainda não funciona** — dá `404 Not Found`,
+porque o pacote não está publicado no npm. Use sempre a forma com `github:`.
+
+Para instalar global:
 
 ```bash
-npm install -g automarketing
+npm install -g github:mateuscaldasdev/automarketing
 automarketing
 ```
 
-Enquanto o pacote não estiver publicado no npm, rode a partir do clone:
+Ou a partir do clone:
 
 ```bash
 git clone https://github.com/mateuscaldasdev/automarketing.git
@@ -62,11 +67,11 @@ Só é criado o que você escolheu no menu.
 
 | Comando | O que faz |
 |---|---|
-| `npx automarketing` | Onboarding (primeira vez) + menu de escolha |
-| `npx automarketing list` | Lista as ferramentas disponíveis com id e tipo |
-| `npx automarketing add crm n8n` | Instala direto pelos ids, sem perguntar nada |
-| `npx automarketing --all` | Instala tudo, sem perguntar nada |
-| `npx automarketing --help` | Ajuda |
+| `npx github:mateuscaldasdev/automarketing` | Onboarding (primeira vez) + menu de escolha |
+| `npx github:mateuscaldasdev/automarketing list` | Lista as ferramentas disponíveis com id e tipo |
+| `npx github:mateuscaldasdev/automarketing add crm n8n` | Instala direto pelos ids, sem perguntar nada |
+| `npx github:mateuscaldasdev/automarketing --all` | Instala tudo, sem perguntar nada |
+| `npx github:mateuscaldasdev/automarketing --help` | Ajuda |
 
 ## Opções
 
@@ -96,17 +101,17 @@ Só é criado o que você escolheu no menu.
 Por padrão o CLI **não sobrescreve** — o que já existe é reportado como ignorado:
 
 ```
-  • CRM Open Source (estoque + WhatsApp + n8n) já existe (use --force para sobrescrever)
+  • CRM Open Source (pipeline + login + n8n) já existe (use --force para sobrescrever)
 ```
 
 Isso protege as customizações que você fez nas skills do cliente. Para atualizar de fato:
 
 ```bash
-npx automarketing add crm --force
+npx github:mateuscaldasdev/automarketing add crm --force
 ```
 
 ⚠️ `--force` em uma skill que você editou **apaga suas alterações**. Em `crm/` ele
-remove a pasta inteira antes de copiar — inclusive `data/db.json` e `.env`. Faça backup,
+remove a pasta inteira antes de copiar — inclusive `.env.local` e o que você editou. Faça backup,
 ou instale a versão nova em outro diretório e compare.
 
 ---
@@ -116,8 +121,8 @@ ou instale a versão nova em outro diretório e compare.
 O menu precisa de TTY. Em script, use as formas que não perguntam nada:
 
 ```bash
-npx automarketing --all --dir ./projeto
-npx automarketing add crm n8n --dir ./projeto
+npx github:mateuscaldasdev/automarketing --all --dir ./projeto
+npx github:mateuscaldasdev/automarketing add crm n8n --dir ./projeto
 ```
 
 Sem TTY e sem esses flags, o CLI falha com uma mensagem explicando o que usar.

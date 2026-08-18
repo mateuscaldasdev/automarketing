@@ -1,76 +1,98 @@
 # CRM Automarketing
 
-CRM open source, sem dependências de runtime: funil de leads em kanban, controle de
-estoque, WhatsApp via Evolution API e webhooks para o n8n.
+Pipeline de leads com login, três níveis de acesso e integração com n8n e WhatsApp.
+Next.js + Supabase.
 
-## Rodar
+## Rodar agora (modo demonstração)
 
 ```bash
-cp .env.example .env
-npm start
+npm install
+npm run dev
 # http://localhost:3333
 ```
 
-Com Docker:
+Sem nenhuma variável configurada, o CRM abre **em modo demonstração**: sem login, com
+leads de exemplo e os dados guardados só no navegador. Serve para navegar, apresentar e
+ver o visual. Nada é gravado em servidor nenhum.
 
-```bash
-docker compose up -d
+## Rodar de verdade (com Supabase)
+
+1. Crie o projeto — na nuvem (supabase.com) **ou** self-hosted na Coolify (a skill
+   `coolify` tem os dois caminhos). O CRM aceita os dois, muda só a URL.
+2. No SQL Editor, rode [`supabase/schema.sql`](supabase/schema.sql) inteiro.
+3. `cp .env.example .env.local` e preencha:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...      # só no servidor
+CRM_API_KEY=...                    # protege POST /api/leads
 ```
 
-Os dados ficam em `data/db.json` (criado com registros de exemplo no primeiro start).
+4. Crie seu usuário em Authentication → Users.
+5. Rode o bloco comentado no fim do `schema.sql` para criar a organização e te promover
+   a `super_admin`. **Sem isso ninguém enxerga nada** — é a RLS fazendo o trabalho dela.
 
-## API
+## Os três papéis
 
-| Método | Rota | O que faz |
+| Papel | Quem é | O que pode |
 |---|---|---|
-| GET | `/health` | Healthcheck (usado pela Coolify) |
-| GET | `/api/metricas` | Totais do funil, estoque e integrações |
-| GET | `/api/leads` | Lista leads |
-| POST | `/api/leads` | Cria lead → dispara `lead.criado` no n8n |
-| GET/PATCH/DELETE | `/api/leads/:id` | Lê, atualiza (etapa dispara `lead.etapa_alterada`) ou remove |
-| GET | `/api/produtos` | Lista produtos |
-| POST | `/api/produtos` | Cria produto |
-| DELETE | `/api/produtos/:id` | Remove produto |
-| POST | `/api/produtos/:id/movimentar` | `{tipo:'entrada'\|'saida', quantidade, motivo}` — bloqueia saldo negativo e dispara `estoque.abaixo_do_minimo` |
-| GET | `/api/movimentacoes` | Últimas 50 movimentações |
-| GET | `/api/mensagens` | Últimas 50 mensagens |
-| POST | `/api/whatsapp/enviar` | `{telefone, texto}` — envia pela Evolution API |
-| POST | `/webhook/whatsapp` | Recebe da Evolution API; cria o lead se o número for novo |
+| `super_admin` | você, o dev | tudo, em todas as organizações |
+| `admin` | seu cliente | administra a própria organização, a equipe e apaga leads |
+| `usuario` | funcionário do cliente | trabalha os leads da organização, sem configurar nem apagar |
 
-Etapas do funil: `novo`, `contato`, `proposta`, `ganho`, `perdido`.
+O isolamento entre clientes é feito por **RLS no Postgres**, não no front-end: mesmo que
+alguém chame a API direto com a chave anônima, só vê a própria organização.
 
-### Exemplos
+Duas travas que valem citar: um usuário **não consegue mudar o próprio papel** (trigger
+`travar_autopromocao`), e toda mudança de etapa vira linha em `movimentacoes_lead`, com
+quem moveu e quando.
+
+## Telas
+
+| Rota | O que faz |
+|---|---|
+| `/crm` | Pipeline kanban, arrastar e soltar entre 7 etapas, busca e filtro por origem |
+| `/crm/clientes` | Tabela com contato, origem, etapa, score e valor |
+| `/crm/analytics` | Métricas, funil por etapa e origem dos leads |
+| `/crm/captura` | O endpoint para o n8n e o site, com exemplos prontos |
+| `/login` | Entrada por e-mail e senha (redireciona para `/crm` no modo demo) |
+
+## Receber lead do n8n
 
 ```bash
-curl -X POST localhost:3333/api/leads \
+curl -X POST https://crm.cliente.com.br/api/leads \
   -H 'Content-Type: application/json' \
-  -d '{"nome":"Carlos","telefone":"5511999998888","valor":900,"origem":"site"}'
-
-curl -X POST localhost:3333/api/produtos/1/movimentar \
-  -H 'Content-Type: application/json' \
-  -d '{"tipo":"saida","quantidade":5,"motivo":"venda"}'
+  -H "x-api-key: $CRM_API_KEY" \
+  -d '{"nome":"Maria Souza","telefone":"5511988887777","origem":"WhatsApp","score":60}'
 ```
 
-## Integrações
+O lead cai direto na coluna **Novos leads**. É por aqui que os agentes do n8n e o
+formulário do site entram — a tela `/crm/captura` mostra o mesmo com exemplos.
 
-**n8n** — preencha `N8N_WEBHOOK_URL`. O CRM faz `POST` com
-`{ evento, dados, em }`. Eventos: `lead.criado`, `lead.etapa_alterada`,
-`estoque.abaixo_do_minimo`, `whatsapp.mensagem_recebida`.
-Falha de integração vira log, nunca erro para o usuário.
+A rota grava com a `service_role` (ignora RLS), então **a `CRM_API_KEY` é o que a
+protege**. Sem ela definida, a rota fica desabilitada de propósito.
 
-**WhatsApp (Evolution API)** — preencha `EVOLUTION_URL`, `EVOLUTION_API_KEY` e
-`EVOLUTION_INSTANCE`. Na Evolution, aponte o webhook de mensagem para
-`https://seu-crm/webhook/whatsapp`.
+## Deploy na Coolify
 
-O workflow de exemplo está em `n8n/crm-automarketing.json` — importe no n8n e troque
-as variáveis indicadas no topo.
+O `Dockerfile` usa o modo `standalone` do Next. Pela skill `coolify`:
 
-## Ligar um site ao CRM
+```bash
+node .../cloudflare.mjs sub cliente.com.br crm
+node .../coolify.mjs stack ... --dominio https://crm.cliente.com.br
+node .../coolify.mjs env <uuid> NEXT_PUBLIC_SUPABASE_URL=... CRM_API_KEY=...
+node .../coolify.mjs deploy <uuid>
+```
 
-Aponte o formulário para `POST /api/leads` com `{ nome, telefone, email, origem }`.
+## Trocar a marca
 
-## Limites desta versão
+Todas as cores são custom properties no `:root` de [`app/globals.css`](app/globals.css).
+Trocar a paleta do cliente é mexer só ali.
 
-Persistência em arquivo JSON e sem autenticação — é a versão funcional mínima.
-Antes de expor na internet: coloque atrás de autenticação, restrinja `CORS_ORIGIN`
-e troque o `src/db.js` por Postgres.
+## Limites conhecidos
+
+- O modo demonstração guarda dados em `localStorage` — é para apresentar, não para usar.
+- Não há tela de gestão de equipe ainda: convidar usuário e trocar papel é pelo painel do
+  Supabase ou por SQL.
+- `POST /api/leads` não tem limite de requisições. Exposto na internet, vale colocar um
+  rate limit na frente.

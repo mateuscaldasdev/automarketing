@@ -5,11 +5,11 @@
 **Instale squads de IA e um CRM open source em qualquer projeto, com um comando.**
 
 ```bash
-npx automarketing
+npx github:mateuscaldasdev/automarketing
 ```
 
-Skills e agentes prontos para Claude Code + um CRM completo com funil, estoque,
-WhatsApp e n8n. Zero dependências, Node 18+.
+Skills e agentes prontos para Claude Code + um CRM com pipeline, login e n8n.
+O CLI não tem dependência nenhuma. Node 18+.
 
 </div>
 
@@ -17,7 +17,7 @@ WhatsApp e n8n. Zero dependências, Node 18+.
 
 ## O que é isto
 
-Um instalador. Você roda `npx automarketing` dentro do projeto de um cliente, responde
+Um instalador. Você roda `npx github:mateuscaldasdev/automarketing` dentro do projeto de um cliente, responde
 cinco perguntas, escolhe as ferramentas no menu e elas aparecem no disco — prontas para
 usar, suas para editar.
 
@@ -44,7 +44,7 @@ usar, suas para editar.
    ◯ Coolify                                  [skill]
    ◯ Desenvolvedor Sênior                     [agent]
    ◯ Engenheiro de Arquitetura de Software    [agent]
-   ◉ CRM Open Source (estoque + WhatsApp...)  [app]
+   ◉ CRM Open Source (pipeline + login...)    [app]
 
   ✔ Redes Sociais → .claude\skills\redes-sociais
   ✔ n8n → .claude\skills\n8n
@@ -81,28 +81,29 @@ que entrega e como customizar.
 
 | Ferramenta | O que faz | Documentação |
 |---|---|---|
-| **CRM Open Source** | Funil kanban, controle de estoque, WhatsApp (Evolution API) e eventos para o n8n | [docs](docs/squads/crm.md) |
+| **CRM Open Source** | Pipeline kanban com login, 3 níveis de acesso e captura por API do n8n. Next.js + Supabase | [docs](docs/squads/crm.md) |
 
 ---
 
 ## O CRM em 30 segundos
 
 ```bash
-npx automarketing add crm
-cd crm && cp .env.example .env && npm start
+npx github:mateuscaldasdev/automarketing add crm
+cd crm && npm install && npm run dev
 # http://localhost:3333
 ```
 
-Sobe já com dados de exemplo. Sem `npm install`, sem banco para configurar.
+Abre em **modo demonstração** — sem login, com leads de exemplo — para você navegar e
+apresentar na hora. Preenchendo o Supabase, vira o CRM de verdade.
 
-- **Funil** de 5 etapas com arrastar e soltar; cada mudança dispara evento no n8n
-- **Estoque** com entradas, saídas, histórico, bloqueio de saldo negativo e alerta de mínimo
-- **WhatsApp** pela Evolution API — e mensagem recebida de número novo **vira lead sozinha**
-- **n8n** recebe `lead.criado`, `lead.etapa_alterada`, `estoque.abaixo_do_minimo` e
-  `whatsapp.mensagem_recebida`
-- **Deploy** com Dockerfile, docker-compose e `/health` prontos para a Coolify
+- **Pipeline kanban** de 7 etapas com arrastar e soltar, busca e filtro por origem
+- **Login e três níveis**: super admin (o dev), admin (o cliente) e usuário (funcionário)
+- **Isolamento por RLS no Postgres**, não no front-end
+- **Captura por API**: `POST /api/leads` é por onde o agente do n8n joga lead no funil
+- **Analytics**: métricas, funil por etapa e origem dos leads
+- **Deploy** com Dockerfile pronto para a Coolify
 
-API completa, modelo de dados e limites conhecidos: [docs/squads/crm.md](docs/squads/crm.md).
+API, papéis, schema e limites conhecidos: [docs/squads/crm.md](docs/squads/crm.md).
 
 ---
 
@@ -135,11 +136,11 @@ Depois de instalar skills ou agentes, **reinicie a sessão do Claude Code**.
 ## Comandos
 
 ```bash
-npx automarketing                      # onboarding + menu
-npx automarketing list                 # lista as ferramentas
-npx automarketing add crm n8n          # instala direto pelos ids
-npx automarketing --all                # instala tudo
-npx automarketing --help
+npx github:mateuscaldasdev/automarketing                      # onboarding + menu
+npx github:mateuscaldasdev/automarketing list                 # lista as ferramentas
+npx github:mateuscaldasdev/automarketing add crm n8n          # instala direto pelos ids
+npx github:mateuscaldasdev/automarketing --all                # instala tudo
+npx github:mateuscaldasdev/automarketing --help
 ```
 
 | Opção | Efeito |
@@ -158,7 +159,8 @@ reinstalação.
 
 - **Os squads já vêm prontos.** Ninguém precisa montar time de agente antes de trabalhar.
 - **O cliente é dono dos arquivos.** Tudo é copiado, em markdown, editável.
-- **Zero dependências.** `npx` instantâneo, nada quebra por versão de biblioteca.
+- **O CLI não tem dependência nenhuma.** `npx` instantâneo, nada quebra por versão de
+  biblioteca. (O CRM, por ser uma aplicação Next.js, tem as dele.)
 - **O onboarding pergunta uma vez.** O perfil fica em `cliente.md` e todas as skills leem.
 - **Nada de mágica.** O CLI copia arquivos. A inteligência está nos templates, que você lê.
 

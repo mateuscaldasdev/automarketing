@@ -6,9 +6,29 @@ import { c } from './ui.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const TEMPLATES = path.join(__dirname, '..', 'templates');
 
+/**
+ * Nunca copiado para o projeto do cliente: sujeira de desenvolvimento que
+ * aparece quando alguém roda o template aqui dentro. Sem isso, um `npm install`
+ * feito no template manda centenas de MB para a máquina de quem instala.
+ */
+const NAO_COPIAR = new Set([
+  'node_modules',
+  '.next',
+  '.env',
+  '.env.local',
+  'data',
+  '.turbo',
+  '.DS_Store',
+]);
+
+function ignorado(nome) {
+  return NAO_COPIAR.has(nome) || nome.endsWith('.log');
+}
+
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (ignorado(entry.name)) continue;
     const from = path.join(src, entry.name);
     const to = path.join(dest, entry.name);
     if (entry.isDirectory()) copyDir(from, to);

@@ -71,8 +71,9 @@ function summarize(results) {
   }
   if (ok.some((r) => r.item.id === 'crm')) {
     console.log(`\n${c.bold('CRM instalado.')} Para rodar:`);
-    console.log(c.dim('  cd crm && cp .env.example .env && npm start'));
+    console.log(c.dim('  cd crm && npm install && npm run dev'));
     console.log(c.dim('  http://localhost:3333'));
+    console.log(c.dim('  Abre em modo demonstração; preencha o .env.local para usar o Supabase.'));
   }
   console.log('');
   return failed.length > 0 ? 1 : 0;

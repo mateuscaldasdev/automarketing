@@ -6,7 +6,7 @@ description: Squad de Redes Sociais da Automarketing. Use quando o usuário quis
 # Squad: Redes Sociais
 
 > **Antes de perguntar qualquer coisa, leia `.automarketing/cliente.md`** — o onboarding
-> do `npx automarketing` já registrou cliente, tipo de negócio, objetivo e público.
+> do `npx github:mateuscaldasdev/automarketing` já registrou cliente, tipo de negócio, objetivo e público.
 > Só pergunte o que faltar lá, e grave a resposta nova no arquivo.
 
 Squad de três papéis: **Linha Editorial → Planejamento → Produção**.

@@ -58,7 +58,7 @@ O menu de seleção múltipla, com as sugestões da pergunta 3 já marcadas:
   ◯ Coolify                                  [skill]
   ◯ Desenvolvedor Sênior                     [agent]
   ◯ Engenheiro de Arquitetura de Software    [agent]
-  ◉ CRM Open Source (estoque + WhatsApp...)  [app]
+  ◉ CRM Open Source (pipeline + login...)    [app]
 ```
 
 Confirmar sem nada marcado encerra sem instalar.
@@ -81,7 +81,7 @@ Confirmar sem nada marcado encerra sem instalar.
 ## Ferramentas instaladas
 - Redes Sociais (`redes-sociais`)
 - n8n (`n8n`)
-- CRM Open Source (estoque + WhatsApp + n8n) (`crm`)
+- CRM Open Source (pipeline + login + n8n) (`crm`)
 
 ## Marca
 - **Tom de voz:**
@@ -101,7 +101,7 @@ cliente e as skills de conteúdo param de perguntar tom de voz e cores a cada pe
 As cinco skills começam com esta instrução:
 
 > **Antes de perguntar qualquer coisa, leia `.automarketing/cliente.md`** — o onboarding
-> do `npx automarketing` já registrou cliente, tipo de negócio, objetivo e público.
+> do `npx github:mateuscaldasdev/automarketing` já registrou cliente, tipo de negócio, objetivo e público.
 > Só pergunte o que faltar lá, e grave a resposta nova no arquivo.
 
 O efeito prático: o cliente responde o briefing uma vez, não uma vez por squad. E o

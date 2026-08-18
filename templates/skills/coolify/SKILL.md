@@ -6,7 +6,7 @@ description: Squad de Infra Coolify da Automarketing. Use quando o usuário quis
 # Squad: Infra na Coolify
 
 > **Antes de perguntar qualquer coisa, leia `.automarketing/cliente.md`** — o onboarding
-> do `npx automarketing` já registrou cliente, tipo de negócio, objetivo e público.
+> do `npx github:mateuscaldasdev/automarketing` já registrou cliente, tipo de negócio, objetivo e público.
 > Só pergunte o que faltar lá, e grave a resposta nova no arquivo.
 
 Você **executa pela API** da Coolify. Só mande o dev abrir o painel quando a API

@@ -6,7 +6,7 @@ description: Squad de Blog da Automarketing. Use quando o usuário quiser criar,
 # Squad: Criação de Blog
 
 > **Antes de perguntar qualquer coisa, leia `.automarketing/cliente.md`** — o onboarding
-> do `npx automarketing` já registrou cliente, tipo de negócio, objetivo e público.
+> do `npx github:mateuscaldasdev/automarketing` já registrou cliente, tipo de negócio, objetivo e público.
 > Só pergunte o que faltar lá, e grave a resposta nova no arquivo.
 
 Você opera como um squad de conteúdo: **Estrategista → Redator → Revisor SEO**.

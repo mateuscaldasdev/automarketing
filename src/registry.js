@@ -68,11 +68,11 @@ export const REGISTRY = [
   },
   {
     id: 'crm',
-    name: 'CRM Open Source (estoque + WhatsApp + n8n)',
+    name: 'CRM Open Source (pipeline + login + n8n)',
     kind: 'app',
     target: 'crm',
     group: 'Produto',
-    description: 'CRM rodável: leads em kanban, controle de estoque, WhatsApp (Evolution API) e webhooks n8n.',
+    description: 'CRM em Next.js + Supabase: pipeline kanban, login e 3 níveis de acesso, captura por API do n8n.',
   },
 ];
 
