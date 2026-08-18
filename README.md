@@ -89,9 +89,13 @@ que entrega e como customizar.
 
 ```bash
 npx github:mateuscaldasdev/automarketing add crm
-cd crm && npm install && npm run dev
-# http://localhost:3333
+cd crm
+npm install
+npm run dev
 ```
+
+Um comando por linha de propósito: o PowerShell do Windows não aceita `&&`.
+O endereço aparece no terminal quando o servidor sobe.
 
 Abre em **modo demonstração** — sem login, com leads de exemplo — para você navegar e
 apresentar na hora. Preenchendo o Supabase, vira o CRM de verdade.

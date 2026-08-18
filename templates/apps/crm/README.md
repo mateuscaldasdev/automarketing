@@ -8,8 +8,10 @@ Next.js + Supabase.
 ```bash
 npm install
 npm run dev
-# http://localhost:3333
 ```
+
+O endereço aparece no terminal — o Next escolhe uma porta livre sozinho, então não
+trava se a 3000 já estiver ocupada.
 
 Sem nenhuma variável configurada, o CRM abre **em modo demonstração**: sem login, com
 leads de exemplo e os dados guardados só no navegador. Serve para navegar, apresentar e

@@ -121,9 +121,14 @@ node bin/automarketing.js list
 Se mexeu no CRM:
 
 ```bash
-cd /tmp/regressao/crm && cp .env.example .env && npm start
-curl -s localhost:3333/health
+cd /tmp/regressao/crm
+npm install
+npm run build
+npm run dev
 ```
+
+Nada de `&&` em comando que vai para a documentação: o PowerShell do Windows não aceita,
+e é o shell da maioria dos clientes.
 
 Se mexeu no fluxo interativo, teste com terminal de verdade — o menu depende de TTY.
 

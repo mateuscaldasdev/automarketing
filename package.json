@@ -1,6 +1,6 @@
 {
   "name": "automarketing",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "CLI da Automarketing — instale squads (skills + agentes) e o CRM open source no seu projeto.",
   "type": "module",
   "bin": {

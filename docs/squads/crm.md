@@ -11,9 +11,13 @@ Next.js 16 + Supabase.
 
 ```bash
 npx github:mateuscaldasdev/automarketing add crm
-cd crm && npm install && npm run dev
-# http://localhost:3333
+cd crm
+npm install
+npm run dev
 ```
+
+Um comando por linha: o PowerShell do Windows não aceita `&&`. O endereço aparece no
+terminal quando o servidor sobe — o Next escolhe uma porta livre sozinho.
 
 Sem nenhuma variável configurada ele abre **em modo demonstração**: sem login, com leads
 de exemplo, dados só no navegador. É para navegar e apresentar — nada vai para servidor.

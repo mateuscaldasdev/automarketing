@@ -1,0 +1,12 @@
+# Garante fim de linha LF no repositório, independente da máquina que commita.
+#
+# Sem isto, um commit vindo de um Windows sem `core.autocrlf` grava CRLF, e no Mac
+# e no Linux o shell responde `bad interpreter: /usr/bin/env bash^M`.
+
+* text=auto
+
+*.sh  text eol=lf
+*.mjs text eol=lf
+*.js  text eol=lf
+*.yml text eol=lf
+*.sql text eol=lf

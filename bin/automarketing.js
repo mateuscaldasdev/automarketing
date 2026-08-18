@@ -47,13 +47,28 @@ ${c.dim('que as skills leem depois em vez de perguntar tudo de novo ao cliente.'
 
 function printList() {
   banner();
+
+  const colunas = process.stdout.columns || 80;
+  const larguraId = Math.max(...REGISTRY.map((i) => i.id.length));
+  // 2 de recuo + id + espaço + [kind] + espaço
+  const usado = 2 + larguraId + 1 + 9 + 1;
+  const sobra = colunas - usado - 1;
+
   let group = '';
   for (const item of REGISTRY) {
     if (item.group !== group) {
       group = item.group;
       console.log(c.bold(`\n  ${group}`));
     }
-    console.log(`  ${c.magenta(item.id.padEnd(34))} ${c.dim(`[${item.kind}]`)} ${item.description}`);
+    // Corta em vez de deixar o terminal quebrar a linha no meio da palavra.
+    const desc = sobra < 20
+      ? ''
+      : item.description.length > sobra
+        ? item.description.slice(0, sobra - 1).trimEnd() + '…'
+        : item.description;
+
+    const tipo = `[${item.kind}]`.padEnd(9);
+    console.log(`  ${c.magenta(item.id.padEnd(larguraId))} ${c.dim(tipo)} ${desc}`);
   }
   console.log('');
 }
@@ -70,9 +85,12 @@ function summarize(results) {
     console.log(c.dim('  Reinicie o Claude Code para carregar as skills e agentes.'));
   }
   if (ok.some((r) => r.item.id === 'crm')) {
-    console.log(`\n${c.bold('CRM instalado.')} Para rodar:`);
-    console.log(c.dim('  cd crm && npm install && npm run dev'));
-    console.log(c.dim('  http://localhost:3333'));
+    // Uma instrução por linha: o PowerShell do Windows não aceita `&&`.
+    console.log(`\n${c.bold('CRM instalado.')} Para rodar, um comando por vez:`);
+    console.log(c.dim('  cd crm'));
+    console.log(c.dim('  npm install'));
+    console.log(c.dim('  npm run dev'));
+    console.log(c.dim('\n  O endereço aparece no terminal quando o servidor sobe.'));
     console.log(c.dim('  Abre em modo demonstração; preencha o .env.local para usar o Supabase.'));
   }
   console.log('');
