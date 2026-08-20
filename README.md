@@ -29,9 +29,9 @@ usar, suas para editar.
    ❯ ● Para um cliente meu
      ○ Para mim / meu próprio negócio
 
-  2. Nome do cliente: (happy-baloes) Happy Balões
+  2. Nome do cliente: (atelie-aurora) Ateliê Aurora
   3. Que tipo de negócio é?  → Venda de produto / e-commerce
-  4. Quem é o cliente dele, em uma frase: mães organizando festa infantil
+  4. Quem é o cliente dele, em uma frase: noivas organizando o próprio casamento
 
   Já marcamos o que costuma fazer sentido nesse tipo de negócio — ajuste à vontade.
 

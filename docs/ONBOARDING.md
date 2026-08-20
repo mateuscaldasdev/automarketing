@@ -72,10 +72,10 @@ Confirmar sem nada marcado encerra sem instalar.
 ```markdown
 # Perfil do cliente
 
-- **Cliente:** Happy Balões
+- **Cliente:** Ateliê Aurora
 - **Projeto para:** Cliente da Automarketing
 - **Negócio:** Venda de produto / e-commerce
-- **Público:** mães organizando festa infantil em SP
+- **Público:** noivas organizando o próprio casamento
 - **Instalado em:** 2026-08-14
 
 ## Ferramentas instaladas
@@ -124,7 +124,7 @@ Você pode editar `cliente.md` à mão a qualquer momento — é markdown comum.
 Quando é pulado por já ter perfil, o CLI avisa qual perfil está usando:
 
 ```
-Perfil já configurado: Happy Balões · Venda de produto / e-commerce
+Perfil já configurado: Ateliê Aurora · Venda de produto / e-commerce
 Use --onboarding para refazer as perguntas.
 ```
 
