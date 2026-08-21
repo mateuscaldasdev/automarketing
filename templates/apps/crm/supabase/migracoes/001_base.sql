@@ -1,15 +1,7 @@
 -- =============================================================================
--- AVISO: este arquivo virou histórico.
---
--- O banco agora se instala sozinho no boot, a partir de `supabase/migracoes/`.
--- Este schema continua aqui só para quem instalou pela versão antiga e ainda
--- procura por ele. Migração nova vai em `supabase/migracoes/NNN_nome.sql`.
--- =============================================================================
-
--- =============================================================================
 -- CRM Automarketing — schema, papéis e RLS
 --
--- Rode uma vez no SQL Editor do Supabase (nuvem ou self-hosted).
+-- Aplicada automaticamente no boot. Não rode à mão.
 -- É idempotente: pode rodar de novo sem quebrar.
 --
 -- Modelo de acesso:
@@ -245,20 +237,3 @@ drop trigger if exists trg_novo_usuario on auth.users;
 create trigger trg_novo_usuario
   after insert on auth.users
   for each row execute function public.criar_perfil_no_cadastro();
-
--- =============================================================================
--- PRIMEIRO ACESSO
---
--- 1. Crie o seu usuário em Authentication → Users → Add user.
--- 2. Rode o bloco abaixo trocando o e-mail: ele cria a organização e te promove
---    a super admin. Sem isso, ninguém enxerga nada — a RLS está fazendo o
---    trabalho dela.
--- =============================================================================
-
--- insert into public.organizacoes (nome) values ('Automarketing')
---   on conflict do nothing;
---
--- update public.perfis
---    set papel = 'super_admin',
---        organizacao_id = (select id from public.organizacoes where nome = 'Automarketing' limit 1)
---  where id = (select id from auth.users where email = 'voce@empresa.com.br');

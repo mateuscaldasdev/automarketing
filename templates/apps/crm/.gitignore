@@ -1,9 +1,11 @@
 node_modules/
 .next/
+
+# Segredos. DATABASE_URL vazando num commit publico e o pior acidente
+# possivel deste projeto: da acesso ao banco inteiro, ignorando a RLS.
 .env
 .env.local
-*.log
 
-# saida de servidor de desenvolvimento (local, nunca versionar)
+# Saida de servidor de desenvolvimento
 .dev-out.txt
 *.log

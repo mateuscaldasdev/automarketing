@@ -100,8 +100,12 @@ O endereço aparece no terminal quando o servidor sobe.
 Abre em **modo demonstração** — sem login, com leads de exemplo — para você navegar e
 apresentar na hora. Preenchendo o Supabase, vira o CRM de verdade.
 
+- **Instala sozinho**: preencha cinco linhas no `.env`, abra o navegador e crie sua conta.
+  **Não existe SQL para rodar** — o CRM cria as tabelas no primeiro boot
 - **Pipeline kanban** de 7 etapas com arrastar e soltar, busca e filtro por origem
+- **Controle de estoque**: produtos, saldo, entrada e saída, alerta de mínimo
 - **Login e três níveis**: super admin (o dev), admin (o cliente) e usuário (funcionário)
+- **Gestão de equipe** pela tela: convidar funcionário e trocar papel
 - **Isolamento por RLS no Postgres**, não no front-end
 - **Captura por API**: `POST /api/leads` é por onde o agente do n8n joga lead no funil
 - **Analytics**: métricas, funil por etapa e origem dos leads

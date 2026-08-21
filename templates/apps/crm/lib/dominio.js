@@ -64,3 +64,15 @@ export function telefoneBonito(t = '') {
   if (d.length === 12) return `+${d.slice(0, 2)} (${d.slice(2, 4)}) ${d.slice(4, 8)}-${d.slice(8)}`;
   return t;
 }
+
+/**
+ * Que papéis alguém pode atribuir a outra pessoa.
+ *
+ * Admin não cria super admin: senão o cliente se daria acesso às outras
+ * organizações, e o isolamento entre clientes iria junto.
+ */
+export function papeisQuePossoDefinir(meuPapel) {
+  if (meuPapel === 'super_admin') return ['super_admin', 'admin', 'usuario'];
+  if (meuPapel === 'admin') return ['admin', 'usuario'];
+  return [];
+}

@@ -19,21 +19,35 @@ ver o visual. Nada é gravado em servidor nenhum.
 
 ## Rodar de verdade (com Supabase)
 
+**Não existe SQL para rodar.** O CRM cria as tabelas sozinho no primeiro boot.
+
 1. Crie o projeto — na nuvem (supabase.com) **ou** self-hosted na Coolify (a skill
    `coolify` tem os dois caminhos). O CRM aceita os dois, muda só a URL.
-2. No SQL Editor, rode [`supabase/schema.sql`](supabase/schema.sql) inteiro.
-3. `cp .env.example .env.local` e preencha:
+2. `cp .env.example .env.local` e preencha as cinco obrigatórias:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...      # só no servidor
+DATABASE_URL=postgresql://...      # Settings → Database, porta 5432
 CRM_API_KEY=...                    # protege POST /api/leads
 ```
 
-4. Crie seu usuário em Authentication → Users.
-5. Rode o bloco comentado no fim do `schema.sql` para criar a organização e te promover
-   a `super_admin`. **Sem isso ninguém enxerga nada** — é a RLS fazendo o trabalho dela.
+3. Suba o CRM — um comando por linha, porque o PowerShell do Windows não aceita `&&`:
+
+```
+npm install
+npm run dev
+```
+
+4. Abra o endereço que apareceu no terminal e **crie a sua conta na tela de boas-vindas**.
+
+Pronto. A tela de boas-vindas some assim que existe o primeiro administrador.
+
+Sobre o `DATABASE_URL`: é ele que permite criar as tabelas. As chaves `anon` e
+`service_role` falam com o Supabase por uma camada que não cria tabela — por isso a conexão
+direta. **Use a porta 5432**, não a 6543: o pooler de transação não sustenta a trava que a
+instalação precisa, e o CRM avisa na tela se você errar.
 
 ## Os três papéis
 
@@ -56,8 +70,11 @@ quem moveu e quando.
 |---|---|
 | `/crm` | Pipeline kanban, arrastar e soltar entre 7 etapas, busca e filtro por origem |
 | `/crm/clientes` | Tabela com contato, origem, etapa, score e valor |
+| `/crm/estoque` | Produtos, saldo, entrada e saída, alerta de mínimo |
 | `/crm/analytics` | Métricas, funil por etapa e origem dos leads |
 | `/crm/captura` | O endpoint para o n8n e o site, com exemplos prontos |
+| `/crm/equipe` | Convidar funcionário e trocar papel, sem passar pelo painel do Supabase |
+| `/bem-vindo` | Primeiro acesso: cria o administrador. Some depois disso |
 | `/login` | Entrada por e-mail e senha (redireciona para `/crm` no modo demo) |
 
 ## Receber lead do n8n
@@ -91,10 +108,23 @@ node .../coolify.mjs deploy <uuid>
 Todas as cores são custom properties no `:root` de [`app/globals.css`](app/globals.css).
 Trocar a paleta do cliente é mexer só ali.
 
+## Sobre o estoque
+
+É **controle interno**: produtos, entrada, saída, saldo e alerta de mínimo. De propósito,
+não dá baixa automática quando um lead fecha e não é consultado pelo agente — são decisões
+registradas, não esquecimentos.
+
+Duas regras que valem conhecer: o histórico é **append-only** (correção é lançamento de
+ajuste, nunca edição), e **saída pode deixar saldo negativo** — lançamento retroativo
+acontece, e recusar só ensinaria a inventar entrada falsa. A tela mostra em vermelho.
+
 ## Limites conhecidos
 
 - O modo demonstração guarda dados em `localStorage` — é para apresentar, não para usar.
-- Não há tela de gestão de equipe ainda: convidar usuário e trocar papel é pelo painel do
-  Supabase ou por SQL.
 - `POST /api/leads` não tem limite de requisições. Exposto na internet, vale colocar um
   rate limit na frente.
+- Se a criação das tabelas falhar, o CRM **sobe assim mesmo** e mostra o erro em
+  `/bem-vindo`, em vez de não abrir. Ele não bloqueia escrita nas outras telas: com o banco
+  sem tabela, a escrita já falha sozinha.
+- Configurar o agente, editar prompt e observar conversas ainda não existem — é a próxima
+  etapa.

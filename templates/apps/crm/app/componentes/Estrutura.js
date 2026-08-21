@@ -27,8 +27,10 @@ const ABAS = [
 const SECOES = [
   { id: 'pipeline', nome: 'Pipeline', icone: 'grade', href: '/crm' },
   { id: 'clientes', nome: 'Clientes', icone: 'pessoas', href: '/crm/clientes' },
+  { id: 'estoque', nome: 'Estoque', icone: 'caixa', href: '/crm/estoque' },
   { id: 'analytics', nome: 'Analytics', icone: 'grafico', href: '/crm/analytics' },
   { id: 'captura', nome: 'Captura', icone: 'link', href: '/crm/captura' },
+  { id: 'equipe', nome: 'Equipe', icone: 'chapeu', href: '/crm/equipe' },
 ];
 
 export function Estrutura({ sessao, titulo, secao, subtitulo, acoes, children }) {

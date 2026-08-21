@@ -2,6 +2,37 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [0.4.0] — 2026-08-21
+
+### CRM — instala sozinho
+
+- **Acabou o SQL manual.** O CRM cria as tabelas no primeiro boot, com migrações
+  numeradas em `supabase/migracoes/`: uma transação por arquivo, versão registrada em
+  `schema_versao`, nada destrutivo e `advisory lock` para duas réplicas não migrarem juntas
+- Tela `/bem-vindo` no lugar do bloco de SQL de promoção que ninguém lembrava de rodar.
+  Ela cria o primeiro administrador e **fecha para sempre** assim que ele existe
+- Falha na criação das tabelas não derruba a aplicação: ela sobe e mostra o erro
+
+### CRM — funções novas
+
+- `/crm/estoque` — produtos, saldo, entrada, saída e alerta de mínimo. Histórico
+  append-only de verdade (sem permissão de alteração nem exclusão no banco). Saída pode
+  deixar saldo negativo de propósito: lançamento retroativo é real
+- `/crm/equipe` — convidar funcionário e trocar papel pela tela. Admin não consegue criar
+  super admin, senão o cliente enxergaria as outras organizações
+
+### CRM — visual
+
+- Paleta preto e laranja, cantos de 4/6px. O acento deixou de se chamar `--roxo` e virou
+  `--acento`: trocar a marca continua sendo mexer só no `:root`
+
+### ⚠️ Mudança de contrato
+
+- **Nova variável obrigatória `DATABASE_URL`.** Quem já instalou precisa acrescentá-la ao
+  `.env.local` (Supabase → Settings → Database, **porta 5432**). É o que permite criar as
+  tabelas: as chaves `anon` e `service_role` passam por uma camada que não executa DDL.
+  É a credencial mais poderosa do pacote — só no servidor, nunca no navegador
+
 ## [0.2.0] — 2026-08-14
 
 ### Infra
