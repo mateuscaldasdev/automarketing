@@ -1,0 +1,78 @@
+# Manifesto do agente. É a fonte da verdade: o enum do classificador e o fluxo
+# do n8n são GERADOS a partir daqui. Mexeu aqui, rode `node scripts/agente.mjs gerar`.
+#
+# Livre para mudar: nome, tom, canal, quantas etapas quiser, quais tools quiser.
+# Fixo: a estrutura. O validador reprova quem sair dela.
+
+agente:
+  nome: Aurora
+  papel: atendimento e venda
+  canal: whatsapp
+
+classificador:
+  prompt: prompts/classificador.md
+  destino_seguro: duvidas
+
+# O funil, na ordem em que o atendimento acontece.
+etapas:
+  - id: recepcao
+    token: "Etapa 1"
+    prompt: prompts/etapa-recepcao.md
+    tools: [gravar_lead]
+  - id: descoberta
+    token: "Etapa 2"
+    prompt: prompts/etapa-descoberta.md
+    tools: [consultar_catalogo, consultar_faq]
+  - id: proposta
+    token: "Etapa 3"
+    prompt: prompts/etapa-proposta.md
+    tools: [gerar_proposta]
+  - id: fechamento
+    token: "Etapa 4"
+    prompt: prompts/etapa-fechamento.md
+    tools: []
+
+# As exceções: quando o cliente sai do caminho normal.
+desvios:
+  - id: negociacao
+    token: negociacao
+    prompt: prompts/desvio-negociacao.md
+    tools: []
+  - id: recusa
+    token: recusa
+    prompt: prompts/desvio-recusa.md
+    tools: []
+  - id: duvidas
+    token: duvidas
+    prompt: prompts/desvio-duvidas.md
+    tools: [consultar_faq]
+
+tools:
+  - id: gravar_lead
+    descricao: "Grava o contato no CRM e devolve o id do lead."
+    status: [ok, duplicado, erro]
+    tipo: http
+    metodo: POST
+    caminho: /api/leads
+    env: CRM_URL
+  - id: consultar_catalogo
+    descricao: "Devolve os itens do catálogo que combinam com o que o cliente pediu."
+    status: [achou, sem_resultado]
+    tipo: http
+    metodo: GET
+    caminho: /api/catalogo
+    env: CRM_URL
+  - id: consultar_faq
+    descricao: "Responde dúvida de produto ou serviço a partir da base de conhecimento."
+    status: [respondeu, sem_resposta]
+    tipo: http
+    metodo: GET
+    caminho: /api/faq
+    env: CRM_URL
+  - id: gerar_proposta
+    descricao: "Monta a proposta e devolve o link para enviar ao cliente."
+    status: [ok, erro]
+    tipo: http
+    metodo: POST
+    caminho: /api/propostas
+    env: CRM_URL

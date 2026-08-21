@@ -67,6 +67,18 @@ export const REGISTRY = [
     description: 'Agente que desenha arquitetura, ADRs e decide trade-offs.',
   },
   {
+    id: 'agente',
+    name: 'Modelo de Agente Conversacional',
+    kind: 'bundle',
+    group: 'Automação',
+    description: 'Padrão de agente: manifesto, prompts, validador e gerador de fluxo, com skill e agente que adaptam ao seu nicho.',
+    partes: [
+      { id: 'agente', kind: 'app', target: 'agente', name: 'Modelo de agente' },
+      { id: 'agente', kind: 'skill', name: 'Skill do agente' },
+      { id: 'adaptador-de-agente', kind: 'agent', name: 'Agente adaptador' },
+    ],
+  },
+  {
     id: 'crm',
     name: 'CRM Open Source (pipeline + login + n8n)',
     kind: 'app',

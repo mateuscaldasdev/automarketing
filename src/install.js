@@ -48,8 +48,33 @@ function sourceFor(item) {
   return path.join(TEMPLATES, 'apps', item.id);
 }
 
+/**
+ * Um item de catálogo que instala em mais de um lugar.
+ *
+ * O modelo de agente é o caso: o arquivo do agente, a skill que ensina a
+ * adaptá-lo e o agente que faz a adaptação são inúteis separados. Marcar três
+ * linhas no menu seria convite a instalar pela metade.
+ */
+function installBundle(item, cwd, opts) {
+  const partes = [];
+  for (const parte of item.partes || []) {
+    const r = installItem(parte, cwd, opts);
+    partes.push(r);
+    if (r.status === 'error') return { ...r, partes };
+  }
+  const instalou = partes.some((p) => p.status === 'ok');
+  return {
+    status: instalou ? 'ok' : 'skipped',
+    dest: partes[0]?.dest || cwd,
+    reason: instalou ? undefined : 'já existe (use --force para sobrescrever)',
+    partes,
+  };
+}
+
 /** Instala um item. Retorna { status: 'ok'|'skipped'|'error', dest, reason? } */
 export function installItem(item, cwd, { force = false } = {}) {
+  if (item.kind === 'bundle') return installBundle(item, cwd, { force });
+
   const src = sourceFor(item);
   const dest = destinationFor(item, cwd);
 
@@ -76,8 +101,12 @@ export function installAll(items, cwd, opts) {
     const r = installItem(item, cwd, opts);
     results.push({ item, ...r });
     const rel = path.relative(cwd, r.dest) || '.';
-    if (r.status === 'ok') console.log(`  ${c.green('✔')} ${item.name} ${c.dim('→ ' + rel)}`);
-    else if (r.status === 'skipped') console.log(`  ${c.yellow('•')} ${item.name} ${c.dim(r.reason)}`);
+    if (r.status === 'ok') {
+      const onde = r.partes
+        ? r.partes.map((p) => path.relative(cwd, p.dest)).join(' · ')
+        : rel;
+      console.log(`  ${c.green('✔')} ${item.name} ${c.dim('→ ' + onde)}`);
+    } else if (r.status === 'skipped') console.log(`  ${c.yellow('•')} ${item.name} ${c.dim(r.reason)}`);
     else console.log(`  ${c.red('✖')} ${item.name} ${c.dim(r.reason)}`);
   }
   return results;
