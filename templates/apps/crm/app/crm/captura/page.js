@@ -22,7 +22,7 @@ export default function Captura() {
     <Estrutura sessao={sessao} secao="Clientes" titulo="CRM" subtitulo="Pipeline de leads e acompanhamento">
       <div className="metrica" style={{ marginBottom: 18 }}>
         <div className="rotulo">Endpoint de captura</div>
-        <div style={{ fontSize: 15, fontFamily: 'ui-monospace, monospace', marginTop: 8, color: 'var(--roxo-claro)' }}>
+        <div style={{ fontSize: 15, fontFamily: 'ui-monospace, monospace', marginTop: 8, color: 'var(--acento-claro)' }}>
           POST {endpoint}
         </div>
         <div className="nota" style={{ marginTop: 8 }}>

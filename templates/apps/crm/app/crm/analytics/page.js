@@ -63,7 +63,7 @@ export default function Analytics() {
                 <span className="ponto" style={{ background: etapa.cor }} />
                 {etapa.nome}
               </div>
-              <div style={{ flex: 1, height: 26, background: 'var(--superficie)', borderRadius: 7, overflow: 'hidden', border: '1px solid var(--linha)' }}>
+              <div style={{ flex: 1, height: 26, background: 'var(--superficie)', borderRadius: 'var(--raio)', overflow: 'hidden', border: '1px solid var(--linha)' }}>
                 <div
                   style={{
                     width: `${(qtd / maior) * 100}%`,

@@ -1,11 +1,11 @@
 /** Regras de domínio do CRM — valem no modo demo e com Supabase. */
 
 export const ETAPAS = [
-  { id: 'novo', nome: 'Novos leads', cor: 'var(--roxo-claro)' },
+  { id: 'novo', nome: 'Novos leads', cor: 'var(--acento-claro)' },
   { id: 'contato', nome: 'Em contato', cor: 'var(--azul)' },
   { id: 'qualificado', nome: 'Qualificado', cor: 'var(--ciano)' },
   { id: 'reuniao', nome: 'Reunião agendada', cor: 'var(--amarelo)' },
-  { id: 'proposta', nome: 'Proposta enviada', cor: 'var(--laranja)' },
+  { id: 'proposta', nome: 'Proposta enviada', cor: 'var(--violeta)' },
   { id: 'ganho', nome: 'Fechado / Ganho', cor: 'var(--verde)' },
   { id: 'perdido', nome: 'Perdido', cor: 'var(--texto-3)' },
 ];

@@ -36,10 +36,10 @@ export default function Login() {
       <div className="login-caixa">
         <div
           style={{
-            width: 40, height: 40, borderRadius: 12,
-            background: 'linear-gradient(135deg, var(--roxo) 0%, #b06cff 100%)',
+            width: 40, height: 40, borderRadius: 'var(--raio)',
+            background: 'linear-gradient(135deg, var(--acento) 0%, #ff8f3d 100%)',
             display: 'grid', placeItems: 'center',
-            fontWeight: 700, color: '#fff', marginBottom: 18,
+            fontWeight: 700, color: '#14100d', marginBottom: 18,
           }}
         >
           A

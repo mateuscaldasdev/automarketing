@@ -1,0 +1,13 @@
+
+> crm-automarketing@2.0.0 dev
+> next dev
+
+▲ Next.js 16.3.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.151:3000
+✓ Ready in 13.2s
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\Mateus\Desktop\aut-open-source because it is outside the current Git repository (C:\Users\Mateus\Desktop\aut-open-source\automarketing).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.js took 150ms
+
