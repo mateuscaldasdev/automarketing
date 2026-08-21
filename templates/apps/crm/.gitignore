@@ -3,3 +3,7 @@ node_modules/
 .env
 .env.local
 *.log
+
+# saida de servidor de desenvolvimento (local, nunca versionar)
+.dev-out.txt
+*.log
